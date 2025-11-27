@@ -16,17 +16,11 @@ pipeline {
     }
 
     stages {
-        stage('Fix Git Ownership') {
-            steps {
-                bat 'git config --global --add safe.directory D:/repos/java-maven-ci-demo.git'
-            }
-        }
-
         stage('Checkout') {
             steps {
                 checkout([$class: 'GitSCM',
-                    branches: [[name: '*/${BRANCH_NAME ?: "develop"}']],
-                    userRemoteConfigs: [[url: 'file:///D:/repos/java-maven-ci-demo.git']]
+                    branches: [[name: '*/${BRANCH_NAME ?: "main"}']],
+                    userRemoteConfigs: [[url: 'https://github.com/prischepovna/java-maven-ci-demo.git']]
                 ])
             }
         }
@@ -80,7 +74,7 @@ pipeline {
                 branch 'main'
             }
             steps {
-                bat 'nohup java -jar target/java-maven-ci-demo-1.0.0.jar > app.log 2>&1 &'
+                bat 'java -jar target/java-maven-ci-demo-1.0.0.jar > app.log 2>&1'
             }
         }
     }
