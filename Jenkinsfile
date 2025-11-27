@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/prischepovna/java-maven-ci-demo.git'
+                git branch: 'main', url: 'https://github.com/prischepovna/java-maven-ci-demo.git'
             }
         }
         
