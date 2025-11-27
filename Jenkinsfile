@@ -18,10 +18,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/${BRANCH_NAME ?: "main"}']],
+                checkout scm: [
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
                     userRemoteConfigs: [[url: 'https://github.com/prischepovna/java-maven-ci-demo.git']]
-                ])
+                ]
             }
         }
 
@@ -65,7 +66,7 @@ pipeline {
                 }
             }
             steps {
-                echo 'Quality checks placeholder: линтеры, статанализ, SonarQube и т.д.'
+                echo 'Quality checks placeholder'
             }
         }
 
@@ -81,10 +82,10 @@ pipeline {
 
     post {
         success {
-            echo "Build successful for ${env.BRANCH_NAME}"
+            echo "Build successful"
         }
         failure {
-            echo "Build failed for ${env.BRANCH_NAME}"
+            echo "Build failed"
         }
     }
 }
