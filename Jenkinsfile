@@ -4,43 +4,33 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', 
-                    url: 'https://github.com/prischepovna/java-maven-ci-demo.git'
+                git 'https://github.com/prischepovna/java-maven-ci-demo.git'
             }
         }
         
-        stage('Build') {
+        stage('Build and Test') {
             steps {
-                bat 'echo "=== Starting Maven Build ==="'
                 bat 'mvn --version'
-                bat 'mvn clean compile'
-            }
-        }
-        
-        stage('Test') {
-            steps {
-                bat 'echo "=== Running Tests ==="'
-                bat 'mvn test'
+                bat 'mvn clean compile test -B'
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/*.xml'
+                    junit 'target/surefire-reports/*.xml'
                 }
             }
         }
         
         stage('Package') {
             steps {
-                bat 'echo "=== Creating JAR ==="'
-                bat 'mvn package'
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                bat 'mvn package -B -DskipTests'
+                archiveArtifacts 'target/*.jar'
             }
         }
     }
     
     post {
         always {
-            echo "=== Build completed ==="
+            echo "=== CI/CD Complete ==="
         }
     }
 }
