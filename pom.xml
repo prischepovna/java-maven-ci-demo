@@ -1,35 +1,91 @@
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
-    <artifactId>java-demo</artifactId>
-    <version>1.0</version>
-    
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.10.0</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-    
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-            </plugin>
-        </plugins>
-    </build>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <!-- Версия модели POM -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Координаты артефакта: группа, имя, версия -->
+  <groupId>com.example</groupId>
+  <artifactId>java-maven-ci-demo</artifactId>
+  <version>1.0.0</version>
+
+  <!-- Общие свойства проекта -->
+  <properties>
+    <!-- Целевая версия Java (JDK 17) -->
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <!-- Кодировка исходников -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Версия JUnit 5 -->
+    <junit.jupiter.version>5.10.2</junit.jupiter.version>
+  </properties>
+
+  <!-- Зависимости проекта -->
+  <dependencies>
+    <!-- JUnit Jupiter — модульные тесты (scope test: не попадает в релизный JAR) -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!-- Конфигурация сборки -->
+  <build>
+    <plugins>
+      <!-- maven-jar-plugin: сборка исполняемого JAR с манифестом (mainClass) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <!-- Добавить Class-Path в манифест (если есть внешние зависимости) -->
+              <addClasspath>true</addClasspath>
+              <!-- Главный класс с методом main -->
+              <mainClass>com.example.App</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!-- JaCoCo: инструмент покрытия кода тестами -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.12</version>
+        <executions>
+          <!-- Агент для сбора покрытия подключается перед фазой тестирования -->
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <!-- Генерация HTML-отчёта после выполнения тестов -->
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Surefire: запуск модульных тестов (JUnit 5) на фазе test -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+        <configuration>
+          <!-- Совместимость модулей: отключение module path для простоты -->
+          <useModulePath>false</useModulePath>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
